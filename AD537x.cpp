@@ -2,10 +2,12 @@
 //
 
 #include <iostream>
-
+#include "dac/DAC.h"
 int main()
 {
+    AD537x::DAC::getInstance()->search_for_boards();
     std::cout << "Hello World!\n";
+    
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

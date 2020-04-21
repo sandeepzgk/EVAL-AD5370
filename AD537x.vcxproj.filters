@@ -23,10 +23,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dac\DAC.h">
+    <ClInclude Include="Utilities\Singleton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Utilities\Singleton.h">
+    <ClInclude Include="dac\DAC.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
