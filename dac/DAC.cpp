@@ -2,13 +2,8 @@
 
 namespace AD537x 
 {
-    DAC::DAC(long vid, long pid) //Constructor
+    DAC::DAC() //Constructor
     {
-
-       // HMODULE hModule = LoadLibrary(TEXT("C:\\Program Files\\Analog Devices\\USB Drivers\\ADI_CYUSB_USB4.dll"));
-        
-        //GetProcAddress(hModule, "Vendor_Request");
-        //Search_For_Boards = (GW)GetProcAddress(hModule, "Search_For_Boards");
 
         hinstDLL = LoadLibrary(TEXT("C:\\Program Files\\Analog Devices\\USB Drivers\\ADI_CYUSB_USB4.dll"));
         if (hinstDLL == 0) 
@@ -27,8 +22,6 @@ namespace AD537x
             FreeLibrary(hinstDLL);           
         }
 
-        _VID = vid;
-        _PID = pid;
     }
 
     DAC::~DAC() //Destructor
@@ -55,16 +48,24 @@ namespace AD537x
        // return Vendor_Request(_handle, request,value, index, direction, zero, &buffer);
         return 0;
     }
+    
+    int DAC::connect_board(int device_index)
+    {
+        return Connect(_VENDOR_ID, _PRODUCT_ID, devices[device_index].path[0], &devices[device_index].handle);         
+    }
+    
 
+    int DAC::download_firmware()
+    {
+        return 0;
+    }
+    
     int DAC::search_for_boards()
     {
-        int NumBoards = 0;
-        unsigned char path[100] = { '\0' };        
-        
-        int retValue =  Search_For_Boards(1110, 45583, &NumBoards, path);
-        _numBoards = NumBoards;
-        _PartPath = path;
-
+        DeviceHandles device;
+        int retValue =  Search_For_Boards(_VENDOR_ID, _PRODUCT_ID, &_numBoards, device.path);
+        devices.push_back(device);
         return retValue;
     }
+
 }  // namespace AD537x

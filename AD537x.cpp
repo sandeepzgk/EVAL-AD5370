@@ -6,6 +6,7 @@
 int main()
 {
     AD537x::DAC::getInstance()->search_for_boards();
+    AD537x::DAC::getInstance()->connect_board(0);
     std::cout << "Hello World!\n";
     
 }
