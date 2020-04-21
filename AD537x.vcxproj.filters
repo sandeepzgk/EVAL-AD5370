@@ -18,5 +18,16 @@
     <ClCompile Include="AD537x.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dac\DAC.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="dac\DAC.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities\Singleton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
