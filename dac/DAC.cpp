@@ -4,8 +4,8 @@ namespace AD537x
 {
     DAC::DAC() //Constructor
     {
-
-        hinstDLL = LoadLibrary(TEXT("C:\\Program Files\\Analog Devices\\USB Drivers\\ADI_CYUSB_USB4.dll"));
+        std::cout << "Loading DLL: \"" << DLL_PATH << "\"" << std::endl;
+        hinstDLL = LoadLibrary(DLL_PATH);
         if (hinstDLL == 0) 
         {
             std::cout << "ERROR: hinstDLL is NULL!" << std::endl;
@@ -30,7 +30,7 @@ namespace AD537x
     }
   
 
-    int DAC::write_spi_word(std::string word)
+    int DAC::write_spi_word(int device_index, std::string word)
     {
         /**** 
             Write SPI word by calling the Vendor_Request DLL call. Takes a hexadecimal word
@@ -45,7 +45,7 @@ namespace AD537x
         unsigned char direction = 0;
         char* buffer;
         
-       // return Vendor_Request(_handle, request,value, index, direction, zero, &buffer);
+       // return Vendor_Request(devices[device_index].handle, request,value, index, direction, zero, &buffer);
         return 0;
     }
     
@@ -55,9 +55,12 @@ namespace AD537x
     }
     
 
-    int DAC::download_firmware()
+    int DAC::download_firmware(int device_index)
     {
-        return 0;
+        std::cout << "Downloading Firmware: \"" << FW_PATH << "\"" << std::endl;
+        int retVal = Download_Firmware(devices[device_index].handle, FW_PATH);
+        
+        return retVal;
     }
     
     int DAC::search_for_boards()
