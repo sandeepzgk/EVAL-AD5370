@@ -105,9 +105,7 @@ namespace AD537x
 
 	int DAC::download_firmware(int device_index)
 	{
-		char a[14] = { 65, 68, 53, 51, 55, 120, 83, 80, 73, 46, 104, 101, 120, 0 };
-
-		std::cout << "Downloading Firmware: \"" << a[0] << "\"" << std::endl;
+		std::cout << "Downloading Firmware: \"" << FW_PATH << "\"" << std::endl;
 		int dwVal = Download_Firmware(devices[device_index].handle, FW_PATH);
 		int initVal = initialize_vendor_request(device_index);
 
