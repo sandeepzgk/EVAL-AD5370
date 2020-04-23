@@ -12,10 +12,10 @@ int main()
     std::cout << std::endl << AD537x::DAC::getInstance()->pulse_ldac(0);
     std::cout << std::endl << AD537x::DAC::getInstance()->write_spi_word(0, "032000");
     std::cout << std::endl << AD537x::DAC::getInstance()->pulse_ldac(0);
-    //std::cout << std::endl << AD537x::DAC::getInstance()->write_spi_word(0, "C80000");
-    std::cout << std::endl << AD537x::DAC::getInstance()->write_voltage(0, 0, 3.f);
+    std::cout << std::endl << AD537x::DAC::getInstance()->write_voltage(0, 0, +4.0);
     std::cout << std::endl << AD537x::DAC::getInstance()->pulse_ldac(0);
     std::cout << "Hello World!\n";
+    
     
 }
 

@@ -32,6 +32,8 @@
 #define VR_REQUEST_CLRLDAC 0xE3
 #define VR_DIR_READ 0x01
 #define VR_DIR_WRITE 0x00
+#define VR_ZERO_DATA_LENGTH 0
+#define VR_ZERO 0
 #define DLL_PATH TEXT("C:\\Program Files\\Analog Devices\\USB Drivers\\ADI_CYUSB_USB4.dll")
 
 
@@ -51,7 +53,7 @@ namespace AD537x
         typedef int (CALLBACK* ConnectFunction) (int, int, unsigned char, int*);
         typedef int (CALLBACK* DownloadFWFunction) (int, char*);
         //typedef int (CALLBACK* VendorRequestFunction) (unsigned int, char, unsigned short, unsigned short, char, unsigned short, char*);
-        typedef int (CALLBACK* VendorRequestFunction) (int, unsigned char, unsigned short, unsigned short, unsigned char, unsigned short, unsigned char* const);
+        typedef int (CALLBACK* VendorRequestFunction) (int, unsigned char, unsigned short, unsigned short, unsigned char, unsigned short, unsigned char*);
         typedef int (CALLBACK* DisconnectFunction) (unsigned int);
 
 
@@ -60,7 +62,7 @@ namespace AD537x
             const int _PRODUCT_ID = 45583;  //HEX VALUE - 0xB208 
            
             char FW_PATH[100] = "C:\\code\\AD537x\\Binaries\\AD537xSPI.hex\0";
-         
+            unsigned char _emptyBuffer;
             
             int _numBoards = 0;
             

@@ -42,14 +42,9 @@ namespace AD537x
         std::stringstream index_string, value_string;
         unsigned short index;
         unsigned short value;
-        short zero = 0;
-        unsigned char direction[2]  = "0";
-        unsigned char buffer[4] = { "0" };
-
-
+  
         index_string << std::hex << word.substr(0, 2);
-        value_string << std::hex << word.substr(2, 4);
-             
+        value_string << std::hex << word.substr(2, 6);
               
         index_string >> index;
         value_string >> value;
@@ -63,7 +58,8 @@ namespace AD537x
         //std::cout << "direction: " << direction << std::endl;
         //std::cout << "buffer: " << buffer << std::endl;
         //std::cout << "##############" << std::endl;
-        int retVal = Vendor_Request(devices[device_index].handle, VR_REQUEST_SPI_WRITE,value, index, VR_DIR_WRITE, zero, buffer);
+        int retVal = Vendor_Request(devices[device_index].handle, 
+            VR_REQUEST_SPI_WRITE,value, index, VR_DIR_WRITE, VR_ZERO_DATA_LENGTH, &_emptyBuffer);
         return retVal;
     }
     
@@ -79,12 +75,12 @@ namespace AD537x
     {
         std::div_t dv{};
         dv = std::div(channel_number, 8);
-        unsigned long group_number  = dv.quot + 1;
-        std::string group           = std::bitset<3>(group_number).to_string();
-        std::string channel         = std::bitset<3>(dv.rem).to_string(); 
-        std::string reg             = "11"; //X Register
-        std::string word            = reg + group + channel;
-        unsigned long value         = std::bitset<8>(word).to_ulong();
+        unsigned long group_no  = dv.quot + 1;
+        std::string group       = std::bitset<3>(group_no).to_string();
+        std::string channel     = std::bitset<3>(dv.rem).to_string(); 
+        std::string reg         = "11"; //X Register
+        std::string word        = reg + group + channel;
+        unsigned long value     = std::bitset<8>(word).to_ulong();
         std::stringstream stream;
         stream << std::hex << value;
         return stream.str();
@@ -116,14 +112,9 @@ namespace AD537x
     }
     
     int DAC::pulse_ldac(int device_index)
-    {
-        
-        short zero = 0;
-        unsigned char direction = 0;
-        unsigned char buffer[4] = { "0\0" };
-
-
-        int retVal = Vendor_Request(devices[device_index].handle, VR_REQUEST_PULSE_LDAC, zero, zero, VR_DIR_WRITE, zero, buffer);
+    {        
+        int retVal = Vendor_Request(devices[device_index].handle, 
+            VR_REQUEST_PULSE_LDAC, VR_ZERO, VR_ZERO, VR_DIR_WRITE, VR_ZERO_DATA_LENGTH, &_emptyBuffer);
         return retVal;
     }
 
