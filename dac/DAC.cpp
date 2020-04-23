@@ -55,7 +55,8 @@ namespace AD537x
 
 	int DAC::connect_board(int device_index)
 	{
-		return Connect(_VENDOR_ID, _PRODUCT_ID, devices[device_index].path[0], &devices[device_index].handle);
+		int retVal = Connect(_VENDOR_ID, _PRODUCT_ID, devices[device_index].path[0], &devices[device_index].handle);
+		return retVal;
 	}
 
 	std::string DAC::channel_to_hex(int channel_number)
@@ -107,7 +108,7 @@ namespace AD537x
 		char a[14] = { 65, 68, 53, 51, 55, 120, 83, 80, 73, 46, 104, 101, 120, 0 };
 
 		std::cout << "Downloading Firmware: \"" << a[0] << "\"" << std::endl;
-		int dwVal = Download_Firmware(devices[device_index].handle, a);
+		int dwVal = Download_Firmware(devices[device_index].handle, FW_PATH);
 		int initVal = initialize_vendor_request(device_index);
 
 		if (initVal == 0 && dwVal == 0)

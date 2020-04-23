@@ -66,7 +66,7 @@ namespace AD537x
 		const int _VENDOR_ID = 1110;   //HEX VALUE - 0x0456 
 		const int _PRODUCT_ID = 45583;  //HEX VALUE - 0xB208 
 
-		char FW_PATH[100] = "C:\\code\\AD537x\\Binaries\\AD537xSPI.hex0\0";
+		char FW_PATH[100] = "C:\\code\\AD537x\\Binaries\\AD537xSPI.hex\0";
 		unsigned char _emptyBuffer;
 
 		int _numBoards = 0;
