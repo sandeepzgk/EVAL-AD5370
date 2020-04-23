@@ -12,16 +12,26 @@
 #include <iostream>
 #include <Windows.h>
 #include <vector>
-
+#include <string>
+#include <sstream>
+#include <cmath>
+#include <bitset>
 
  // Defines
 
 
 // Vendor Request Commands
-#define VR_REQUEST 0xDE
-#define VR_VALUE 0xD
-#define DIR_READ 0x01
-#define DIR_WRITE 0x00
+#define VR_REQUEST_SPI_WRITE 0xDD
+#define VR_REQUEST_SPI_READ 0xDD
+#define VR_REQUEST_SETRESET 0xDA
+#define VR_REQUEST_CLRRESET 0xDB
+#define VR_REQUEST_SETCLR 0xDC
+#define VR_REQUEST_PULSE_LDAC 0xDE
+#define VR_REQUEST_CLRCLR 0xDF
+#define VR_REQUEST_SETLDAC 0xE2
+#define VR_REQUEST_CLRLDAC 0xE3
+#define VR_DIR_READ 0x01
+#define VR_DIR_WRITE 0x00
 #define DLL_PATH TEXT("C:\\Program Files\\Analog Devices\\USB Drivers\\ADI_CYUSB_USB4.dll")
 
 
@@ -63,6 +73,10 @@ namespace AD537x
             DisconnectFunction Disconnect;
 
             HMODULE hinstDLL;
+
+
+            std::string channel_to_hex(int channel);
+            std::string voltage_to_hex(float voltage_target, float v_max, float v_min);
            
         protected:
             //List of protected variables and functions
@@ -74,6 +88,8 @@ namespace AD537x
 
             int write_spi_word(int device_index, std::string word);
             int connect_board(int device_index);
+            int write_voltage(int device_index, int channel, float voltage);
+            int pulse_ldac(int device_index);
             int download_firmware(int device_index);
             int search_for_boards();
     };

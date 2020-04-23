@@ -5,9 +5,16 @@
 #include "dac/DAC.h"
 int main()
 {
-    AD537x::DAC::getInstance()->search_for_boards();
-    AD537x::DAC::getInstance()->connect_board(0);
-    AD537x::DAC::getInstance()->download_firmware(0);
+    std::cout << std::endl << AD537x::DAC::getInstance()->search_for_boards();
+    std::cout << std::endl << AD537x::DAC::getInstance()->connect_board(0);
+    std::cout << std::endl << AD537x::DAC::getInstance()->download_firmware(0);
+    std::cout << std::endl << AD537x::DAC::getInstance()->write_spi_word(0, "022000");
+    std::cout << std::endl << AD537x::DAC::getInstance()->pulse_ldac(0);
+    std::cout << std::endl << AD537x::DAC::getInstance()->write_spi_word(0, "032000");
+    std::cout << std::endl << AD537x::DAC::getInstance()->pulse_ldac(0);
+    //std::cout << std::endl << AD537x::DAC::getInstance()->write_spi_word(0, "C80000");
+    std::cout << std::endl << AD537x::DAC::getInstance()->write_voltage(0, 0, 3.f);
+    std::cout << std::endl << AD537x::DAC::getInstance()->pulse_ldac(0);
     std::cout << "Hello World!\n";
     
 }
