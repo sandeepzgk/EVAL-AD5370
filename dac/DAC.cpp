@@ -120,12 +120,27 @@ namespace AD537x
 
     int DAC::download_firmware(int device_index)
     {
-        std::cout << "Downloading Firmware: \"" << FW_PATH << "\"" << std::endl;
-        int retVal = Download_Firmware(devices[device_index].handle, FW_PATH);
+        char a[100] = { 65, 68, 53, 51, 55, 120, 83, 80, 73, 46, 104, 101, 120, 0 };
         
-        return retVal;
+        std::cout << "Downloading Firmware: \"" << a[0] << "\"" << std::endl;
+        int dwVal = Download_Firmware(devices[device_index].handle, a);
+        int initVal = initialize_vendor_request(device_index);
+
+        if (initVal == 0 && dwVal == 0)
+            return 0;
+        else
+            return 1;
+
     }
     
+    int DAC::initialize_vendor_request(int device_index)
+    {
+        int retVal = Vendor_Request(devices[device_index].handle,
+            VR_INIT, 0, 0, VR_DIR_WRITE, 0, &_emptyBuffer);
+        return retVal;
+    }
+
+
     int DAC::search_for_boards()
     {
         DeviceHandles device;
