@@ -58,7 +58,6 @@ namespace AD537x
         typedef int (CALLBACK* SearchFunction) (int, int, int *, unsigned char* const);
         typedef int (CALLBACK* ConnectFunction) (int, int, unsigned char, int*);
         typedef int (CALLBACK* DownloadFWFunction) (int, char[]);
-        //typedef int (CALLBACK* VendorRequestFunction) (unsigned int, char, unsigned short, unsigned short, char, unsigned short, char*);
         typedef int (CALLBACK* VendorRequestFunction) (int, unsigned char, unsigned short, unsigned short, unsigned char, unsigned short, unsigned char*);
         typedef int (CALLBACK* DisconnectFunction) (unsigned int);
 
