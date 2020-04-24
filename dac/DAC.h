@@ -57,23 +57,23 @@ namespace AD537x
 
 	private:
 		//Vendor ID and Product ID for AD5370 (evaluation board)
-		const int _VENDOR_ID = 1110;   //HEX VALUE - 0x0456 
-		const int _PRODUCT_ID = 45583;  //HEX VALUE - 0xB208 
+		const int _VENDOR_ID = 1110;						//HEX VALUE - 0x0456 
+		const int _PRODUCT_ID = 45583;						//HEX VALUE - 0xB208 
 
 		//@DLR
 		//Fully Qualified Path to Firmware ending with a \0. This cannot be a #define because, the function requires char * not char_t?? 
 		char FW_PATH[100] = "C:\\code\\AD537x\\Binaries\\AD537xSPI.hex\0";
 		
-		unsigned char _emptyBuffer;				//Empty Buffer to send while calling write Vendor Requests
+		unsigned char _emptyBuffer;							//Empty Buffer to send while calling write Vendor Requests
 
-		int _numBoards = 0;						//Number of Boards attached to the system via USB
+		int _numBoards = 0;									//Number of Boards attached to the system via USB
 		
-		const float _vMax = +6.f;				//Max Voltage of the board based on Jumper Setting
-		const float _vMin = -6.f;				//Min Voltage of the board based on Jumper Setting
-		const float _vRange = _vMax - _vMin;	//Voltage Range of the board, used for computing voltage values to be sent via SPI
-		const float _vOffset = _vRange / 2.f;	//Offset Voltage of the board, used for computing voltage values to be sentvia SPI
+		const float _vMax = +6.f;							//Max Voltage of the board based on Jumper Setting
+		const float _vMin = -6.f;							//Min Voltage of the board based on Jumper Setting
+		const float _vRange = _vMax - _vMin;				//Voltage Range of the board, used for computing voltage values to be sent via SPI
+		const float _vOffset = _vRange / 2.f;				//Offset Voltage of the board, used for computing voltage values to be sentvia SPI
 
-		HMODULE hinstDLL;						//HModule to load and store DLL symbols
+		HMODULE hinstDLL;									//HModule to load and store DLL symbols
 
 		//Instances of the typedef of the DLL function prototypes
 		SearchFunction Search_For_Boards;
@@ -83,19 +83,19 @@ namespace AD537x
 		DisconnectFunction Disconnect;
 
 		int initialize_vendor_request(int device_index);
+		int download_firmware(int device_index);
+		int search_for_boards();
+		int connect_board(int device_index);
+
 
 	public:
 		std::vector<DeviceHandles> devices;
 		DAC();
 		~DAC();
 
-		int write_spi_word(int device_index, std::string word);
-		int connect_board(int device_index);
+		int write_spi_word(int device_index, std::string word);		
 		int write_voltage(int device_index, int channel, float voltage);
 		int pulse_ldac(int device_index);
-		int download_firmware(int device_index);
-		int search_for_boards();
-
 		int find_and_initialize_all_boards();
 	};
 }  // namespace AD537x

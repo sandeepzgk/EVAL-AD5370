@@ -7,9 +7,7 @@ int main()
 {
     AD537x::DAC *dac = AD537x::DAC::getInstance();
     
-    std::cout << std::endl << dac->search_for_boards();
-    std::cout << std::endl << dac->connect_board(0);
-    std::cout << std::endl << dac->download_firmware(0);
+    std::cout << std::endl << dac->find_and_initialize_all_boards();
     std::cout << std::endl << dac->write_spi_word(0, "022000");
     std::cout << std::endl << dac->pulse_ldac(0);
     std::cout << std::endl << dac->write_spi_word(0, "032000");
