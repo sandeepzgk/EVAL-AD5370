@@ -42,7 +42,7 @@ namespace AD537x
 			disconnectBoard(i);
 		}
 		_numBoards = -1;
-		devices.empty();
+		int vector_free_result = devices.empty();
 		FreeLibrary(hinstDLL);
 	}
 

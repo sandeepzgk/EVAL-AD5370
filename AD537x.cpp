@@ -14,7 +14,6 @@ int main()
     std::cout << std::endl << dac->pulseLDAC(0);
     std::cout << std::endl << dac->writeVoltage(0, 0, -4.0);
     std::cout << std::endl << dac->pulseLDAC(0);
-    std::cout << "Hello World!\n";
     
     
 }
