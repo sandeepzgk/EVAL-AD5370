@@ -39,7 +39,7 @@ namespace AD537x
 	{
 		for (int i = 0; i < _numBoards; i++)
 		{		
-			disconnect_board(i);
+			disconnectBoard(i);
 		}
 		_numBoards = -1;
 		devices.empty();
@@ -51,24 +51,27 @@ namespace AD537x
 	*		Attempts to connect, download firware and intialize them for use
 	* Param: None
 	*/
-	int DAC::find_and_initialize_all_boards()
+	int DAC::findAndInitializeAllBoards()
 	{
-		int searchResult = search_for_boards();
+		int board_search_result = searchForBoards();
+		int init_all_boards_result = 0;
 		for (int i = 0; i < _numBoards; i++)
 		{
-			int connectResult = connect_board(i);
-			int FWResult = download_firmware(i);
-			int initResult = initialize_vendor_request(i);
-
-			if (connectResult != 0)
-				std::cout << "ERROR: "<< connectResult << " -Connection Issue for Board: " << i << std::endl;
-			if (FWResult != 0)
-				std::cout << "ERROR: " << FWResult << " -Firmware Upload Issue for Board: " << i << std::endl;
-			if (initResult != 0)
-				std::cout << "ERROR: " << initResult << " -Initialize Issue for Board: " << i << std::endl;
-
-			return connectResult + FWResult +initResult;
+			int connect_result = connectBoard(i);
+			int firmware_result = downloadFirmware(i);
+			int init_vr_result = initializeVendorRequest(i);
+			int init_ch_result = initalizeAllChannels(i);
+			if (connect_result != 0)
+				std::cout << "ERROR: "<< connect_result << " -Connection Issue for Board: " << i << std::endl;
+			if (firmware_result != 0)
+				std::cout << "ERROR: " << firmware_result << " -Firmware Upload Issue for Board: " << i << std::endl;
+			if (init_vr_result != 0)
+				std::cout << "ERROR: " << init_vr_result << " -Initialize Issue for Board: " << i << std::endl;
+			if (init_ch_result != 0)
+				std::cout << "ERROR: " << init_ch_result << " -Initialize Voltage Issue for Board: " << i << std::endl;			
+			init_all_boards_result += connect_result + firmware_result + init_vr_result + init_ch_result;
 		}
+		return board_search_result + init_all_boards_result;
 	}
 
 	/**
@@ -77,7 +80,7 @@ namespace AD537x
 	*		path returned from the search function
 	* Param: None
 	*/
-	int DAC::search_for_boards()
+	int DAC::searchForBoards()
 	{
 
 		unsigned char devicePaths[MAX_BOARDS];
@@ -95,7 +98,7 @@ namespace AD537x
 	* Desc: Downloads the firmware present in the FW_PATH to the device_index board
 	* Param: device_index - the index of the board in the devices vector
 	*/
-	int DAC::download_firmware(int device_index)
+	int DAC::downloadFirmware(int device_index)
 	{
 		return Download_Firmware(devices[device_index].handle, FW_PATH);
 	}
@@ -104,7 +107,7 @@ namespace AD537x
 	* Desc: Sends the initialize vendor request to the device to support future VR requests
 	* Param: device_index - the index of the board in the devices vector
 	*/
-	int DAC::initialize_vendor_request(int device_index)
+	int DAC::initializeVendorRequest(int device_index)
 	{
 		return Vendor_Request(devices[device_index].handle,
 			VR_INIT, 0, 0, VR_DIR_WRITE, VR_ZERO_DATA_LENGTH, &_emptyBuffer);
@@ -116,7 +119,7 @@ namespace AD537x
 	*		 word         - the hexadecimal word that needs to be written to the board for 
 							speical commands
 	*/
-	int DAC::write_spi_word(int device_index, std::string word)
+	int DAC::writeSPIWord(int device_index, std::string word)
 	{
 		std::stringstream index_string, value_string;
 		unsigned short index;
@@ -136,7 +139,7 @@ namespace AD537x
 	* Desc: Disconnects a particular board
 	* Param: device_index - the index of the board in the devices vector
 	*/
-	int DAC::disconnect_board(int device_index)
+	int DAC::disconnectBoard(int device_index)
 	{
 		return Disconnect(devices[device_index].handle);
 	}
@@ -146,7 +149,7 @@ namespace AD537x
 	*		that particular path
 	* Param: device_index - the index of the board in the devices vector
 	*/
-	int DAC::connect_board(int device_index)
+	int DAC::connectBoard(int device_index)
 	{
 		return Connect(_VENDOR_ID, _PRODUCT_ID, devices[device_index].path, &devices[device_index].handle);
 	}
@@ -167,7 +170,7 @@ namespace AD537x
 	*		 voltage_target - the target voltage the system needs to write to the board
 	*						  i.e usually within a range of _vMin to _vMax
 	*/
-	int DAC::write_voltage(int device_index, int channel, float voltage_target)
+	int DAC::writeVoltage(int device_index, int channel, float voltage_target)
 	{
 		unsigned short value = round(((voltage_target + _vOffset) / _vRange) * 65535);
 		return Vendor_Request(devices[device_index].handle,
@@ -175,11 +178,23 @@ namespace AD537x
 	}
 
 	/**
+	* Desc: Sets all channels of a particular board to zero
+	* Param: device_index - the index of the board in the devices vector
+	*		 max_channels - max number of channels for the board type, i.e for AD5370, its 40.
+	*/
+	int AD537x::DAC::initalizeAllChannels(int device_index, int max_channels)
+	{
+		int init_ch_zero_result = 0;
+		for (int i = 0; i < max_channels; i++)
+			init_ch_zero_result += writeVoltage(device_index, i, 0.0f);
+		return 	init_ch_zero_result;
+	}
+	/**
 	* Desc: Creates the LDAC Pulse signal for updating the DAC to present new register
 	*		values
 	* Param: device_index - the index of the board in the devices vector
 	*/
-	int DAC::pulse_ldac(int device_index)
+	int DAC::pulseLDAC(int device_index)
 	{
 		return Vendor_Request(devices[device_index].handle,
 			VR_PULSE_LDAC, VR_ZERO, VR_ZERO, VR_DIR_WRITE, VR_ZERO_DATA_LENGTH, &_emptyBuffer);

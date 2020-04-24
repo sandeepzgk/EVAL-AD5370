@@ -31,6 +31,7 @@
 
 // Application Specific Constants 
 #define MAX_BOARDS 100
+#define MAX_CHANNELS 40
 #define DLL_PATH TEXT("C:\\Program Files\\Analog Devices\\USB Drivers\\ADI_CYUSB_USB4.dll")	//Default driver installation path on windows. and default path to the DLL
 
 
@@ -89,11 +90,12 @@ namespace AD537x
 		SearchFunction Search_For_Boards;
 		VendorRequestFunction Vendor_Request;
 
-		int initialize_vendor_request(int device_index);
-		int download_firmware(int device_index);
-		int search_for_boards();
-		int connect_board(int device_index);
-		int disconnect_board(int device_index);
+		int initializeVendorRequest(int device_index);
+		int downloadFirmware(int device_index);
+		int searchForBoards();
+		int connectBoard(int device_index);
+		int disconnectBoard(int device_index);
+		int initalizeAllChannels(int device_index, int max_channels = MAX_CHANNELS);
 
 
 	public:
@@ -101,10 +103,10 @@ namespace AD537x
 		DAC();
 		~DAC();
 		
-		int write_spi_word(int device_index, std::string word);		
-		int write_voltage(int device_index, int channel, float voltage);
-		int pulse_ldac(int device_index);
-		int find_and_initialize_all_boards();
+		int writeSPIWord(int device_index, std::string word);		
+		int writeVoltage(int device_index, int channel, float voltage);
+		int pulseLDAC(int device_index);
+		int findAndInitializeAllBoards();
 	};
 }  // namespace AD537x
 #endif  // DAC_H
