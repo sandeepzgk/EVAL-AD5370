@@ -12,9 +12,7 @@ namespace AD537x
 	{
 		hinstDLL = LoadLibrary(DLL_PATH);
 		if (hinstDLL == 0)
-		{
 			std::cout << "ERROR: DLL was not initialized." << std::endl;
-		}
 
 		Search_For_Boards = (SearchFunction)GetProcAddress(hinstDLL, "Search_For_Boards");
 		Connect = (ConnectFunction)GetProcAddress(hinstDLL, "Connect");
@@ -26,14 +24,13 @@ namespace AD537x
 			std::cout << "ERROR: One of the DLL function is empty." << std::endl;
 			FreeLibrary(hinstDLL);
 		}
-
 	}
 
 	/**
 	* Desc: Class Destructor of singleton DAC class, that frees the DLL loaded in constructor
 	* Param: None
 	*/
-	DAC::~DAC() //Destructor
+	DAC::~DAC()
 	{
 		FreeLibrary(hinstDLL);
 	}
@@ -73,7 +70,7 @@ namespace AD537x
 	{
 
 		unsigned char devicePaths[MAX_BOARDS];
-		int retValue = Search_For_Boards(_VENDOR_ID, _PRODUCT_ID, &_numBoards, devicePaths);
+		int retValue = Search_For_Boards(_VENDOR_ID, _PRODUCT_ID, &_numBoards, devicePaths);		
 		for (int i = 0; i < _numBoards; i++)
 		{
 			DeviceHandles device;
@@ -93,7 +90,7 @@ namespace AD537x
 	}
 
 	/**
-	* Desc: Sends the initialize vendor request to the device to initialize further vendor requests
+	* Desc: Sends the initialize vendor request to the device to support future VR requests
 	* Param: device_index - the index of the board in the devices vector
 	*/
 	int DAC::initialize_vendor_request(int device_index)
@@ -105,7 +102,8 @@ namespace AD537x
 	/**
 	* Desc: Takes a hexadecimal word and splits to different value and index parameters.
 	* Param: device_index - the index of the board in the devices vector
-	*		 word         - the hexadecimal word that needs to be written to the board for speical commands
+	*		 word         - the hexadecimal word that needs to be written to the board for 
+							speical commands
 	*/
 	int DAC::write_spi_word(int device_index, std::string word)
 	{
@@ -124,7 +122,8 @@ namespace AD537x
 	}
 
 	/**
-	* Desc: Takes a hexadecimal word and splits to different value and index parameters.
+	* Desc: Connects to a particular device, and populates the handle in the devices vector for 
+	*		that particular path
 	* Param: device_index - the index of the board in the devices vector
 	*/
 	int DAC::connect_board(int device_index)
@@ -132,6 +131,22 @@ namespace AD537x
 		return Connect(_VENDOR_ID, _PRODUCT_ID, devices[device_index].path, &devices[device_index].handle);
 	}
 
+	/**
+	* Desc: Creates and issues a vendor request (VR) that sets a particular voltage at a 
+	*		particular channel for a particular device.
+	*		Note 1: the channel computation uses a complex method based on channel, 
+	*				and channel group this is documented in the older version of code in 
+	*				function channel_to_hex in https://bit.ly/354O4UF
+	*				This function boils down to "0xC8 + channel", which is used here to
+	*				speed up required time
+	*		Note 2: the voltage computation takes a target value in the _vRange, and maps it 
+	*				to 0-65535, i.e. the range of unsigned short.
+	* Param: device_index	- the index of the board in the devices vector
+	*		 channel		- provides the enumeration of channel where for the voltage
+	*						  i.e. 0 to 39 for EVAL-AD5370
+	*		 voltage_target - the target voltage the system needs to write to the board
+	*						  i.e usually within a range of _vMin to _vMax
+	*/
 	int DAC::write_voltage(int device_index, int channel, float voltage_target)
 	{
 		unsigned short value = round(((voltage_target + _vOffset) / _vRange) * 65535);
@@ -139,6 +154,11 @@ namespace AD537x
 			VR_SPI_WRITE, value, 0xC8+channel, VR_DIR_WRITE, VR_ZERO_DATA_LENGTH, &_emptyBuffer);
 	}
 
+	/**
+	* Desc: Creates the LDAC Pulse signal for updating the DAC to present new register
+	*		values
+	* Param: device_index - the index of the board in the devices vector
+	*/
 	int DAC::pulse_ldac(int device_index)
 	{
 		return Vendor_Request(devices[device_index].handle,
