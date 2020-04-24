@@ -9,11 +9,11 @@ int main()
     
     std::cout << std::endl << dac->findAndInitializeAllBoards();
     std::cout << std::endl << dac->writeSPIWord(0, "022000");
-    std::cout << std::endl << dac->pulseLDAC(0);
+    std::cout << std::endl << dac->setLDAC(0);
     std::cout << std::endl << dac->writeSPIWord(0, "032000");
-    std::cout << std::endl << dac->pulseLDAC(0);
+    std::cout << std::endl << dac->setLDAC(0);
     std::cout << std::endl << dac->writeVoltage(0, 0, -4.0);
-    std::cout << std::endl << dac->pulseLDAC(0);
+    std::cout << std::endl << dac->setLDAC(0);
     
     
 }

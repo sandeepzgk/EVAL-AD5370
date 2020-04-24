@@ -93,23 +93,27 @@ namespace AD537x
 		SearchFunction Search_For_Boards;
 		VendorRequestFunction Vendor_Request;
 
+		//Private Methods
 		int initializeVendorRequest(int device_index);
 		int downloadFirmware(int device_index);
 		int searchForBoards();
 		int connectBoard(int device_index);
 		int disconnectBoard(int device_index);
 		int initalizeAllChannels(int device_index, int max_channels = MAX_CHANNELS);
-
-
+		
 	public:
 		std::vector<DeviceHandles> devices;
 		DAC();
 		~DAC();
 		
+		//Public Methods
 		int writeSPIWord(int device_index, std::string word);		
 		int writeVoltage(int device_index, int channel, float voltage);
-		int pulseLDAC(int device_index);
+		int setLDAC(int device_index, unsigned short mode = VR_PULSE_LDAC);
 		int findAndInitializeAllBoards();
+
+		//Public Getters
+		int getBoardCount();
 	};
 }  // namespace AD537x
 #endif  // DAC_H

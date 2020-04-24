@@ -117,7 +117,7 @@ namespace AD537x
 	* Desc: Takes a hexadecimal word and splits to different value and index parameters.
 	* Param: device_index - the index of the board in the devices vector
 	*		 word         - the hexadecimal word that needs to be written to the board for 
-							speical commands
+	*						speical commands
 	*/
 	int DAC::writeSPIWord(int device_index, std::string word)
 	{
@@ -172,9 +172,9 @@ namespace AD537x
 	*/
 	int DAC::writeVoltage(int device_index, int channel, float voltage_target)
 	{
-		unsigned short value = round(((voltage_target + _vOffset) / _vRange) * 65535);
 		return Vendor_Request(devices[device_index].handle,
-			VR_SPI_WRITE, value, 0xC8+channel, VR_DIR_WRITE, VR_ZERO_DATA_LENGTH, &_emptyBuffer);
+			VR_SPI_WRITE, (unsigned short)(round(((voltage_target + _vOffset) / _vRange) * 65535)),
+			0xC8+channel, VR_DIR_WRITE, VR_ZERO_DATA_LENGTH, &_emptyBuffer);
 	}
 
 	/**
@@ -193,11 +193,22 @@ namespace AD537x
 	* Desc: Creates the LDAC Pulse signal for updating the DAC to present new register
 	*		values
 	* Param: device_index - the index of the board in the devices vector
+	*		 mode - this value determines if the LDAC is SET / RESET or PULSED
 	*/
-	int DAC::pulseLDAC(int device_index)
+	int DAC::setLDAC(int device_index, unsigned short mode)
 	{
+	
 		return Vendor_Request(devices[device_index].handle,
-			VR_PULSE_LDAC, VR_ZERO, VR_ZERO, VR_DIR_WRITE, VR_ZERO_DATA_LENGTH, &_emptyBuffer);
+			mode, VR_ZERO, VR_ZERO, VR_DIR_WRITE, VR_ZERO_DATA_LENGTH, &_emptyBuffer);
+	}
+
+	/**
+	* Desc: Returns the number of boards connected via USB
+	* Param: None
+	*/
+	int DAC::getBoardCount()
+	{
+		return _numBoards;
 	}
 
 }  // namespace AD537x
