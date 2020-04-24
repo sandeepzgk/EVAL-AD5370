@@ -37,6 +37,12 @@ namespace AD537x
 	*/
 	DAC::~DAC()
 	{
+		for (int i = 0; i < _numBoards; i++)
+		{		
+			disconnect_board(i);
+		}
+		_numBoards = -1;
+		devices.empty();
 		FreeLibrary(hinstDLL);
 	}
 
@@ -127,7 +133,16 @@ namespace AD537x
 	}
 
 	/**
-	* Desc: Connects to a particular device, and populates the handle in the devices vector for 
+	* Desc: Disconnects a particular board
+	* Param: device_index - the index of the board in the devices vector
+	*/
+	int DAC::disconnect_board(int device_index)
+	{
+		return Disconnect(devices[device_index].handle);
+	}
+
+	/**
+	* Desc: Connects to a particular device, and populates the handle in the devices vector for
 	*		that particular path
 	* Param: device_index - the index of the board in the devices vector
 	*/

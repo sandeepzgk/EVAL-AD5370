@@ -31,7 +31,7 @@
 
 // Application Specific Constants 
 #define MAX_BOARDS 100
-#define DLL_PATH TEXT("C:\\Program Files\\Analog Devices\\USB Drivers\\ADI_CYUSB_USB4.dll")
+#define DLL_PATH TEXT("C:\\Program Files\\Analog Devices\\USB Drivers\\ADI_CYUSB_USB4.dll")	//Default driver installation path on windows. and default path to the DLL
 
 
 namespace AD537x
@@ -62,8 +62,10 @@ namespace AD537x
 		const int _VENDOR_ID = 1110;						//HEX VALUE - 0x0456 
 		const int _PRODUCT_ID = 45583;						//HEX VALUE - 0xB208 
 
-		//@DLR
-		//Fully Qualified Path to Firmware ending with a \0. This cannot be a #define because, the function requires char * not char_t?? 
+		//@DLR #TODO
+		//Fully Qualified Path to Firmware ending with a \0. 
+		//This cannot be a #define because, the function requires char * not char_t?? 
+		//Partial paths seems to cause issues., can it be made into a parameter for class construction? 
 		char FW_PATH[100] = "C:\\code\\AD537x\\Binaries\\AD537xSPI.hex\0";
 		
 		unsigned char _emptyBuffer;							//Empty Buffer to send while calling write Vendor Requests
@@ -91,13 +93,14 @@ namespace AD537x
 		int download_firmware(int device_index);
 		int search_for_boards();
 		int connect_board(int device_index);
+		int disconnect_board(int device_index);
 
 
 	public:
 		std::vector<DeviceHandles> devices;
 		DAC();
 		~DAC();
-
+		
 		int write_spi_word(int device_index, std::string word);		
 		int write_voltage(int device_index, int channel, float voltage);
 		int pulse_ldac(int device_index);
