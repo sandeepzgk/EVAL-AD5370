@@ -24,7 +24,7 @@ namespace AD537x
 		Vendor_Request = (VendorRequestFunction)GetProcAddress(hinstDLL, "Vendor_Request");
 
 		if (!Search_For_Boards || !Connect || !Vendor_Request || !Disconnect || !Download_Firmware ||
-			!Get_String_Descriptor || !Retrieve_EndPoint_Details || Bulk_Transfer)
+			!Get_String_Descriptor || !Retrieve_EndPoint_Details || !Bulk_Transfer)
 		{
 			std::cout << "ERROR: One of the DLL function is empty." << std::endl;
 			FreeLibrary(hinstDLL);
