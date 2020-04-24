@@ -48,12 +48,14 @@ namespace AD537x
 		friend class Singleton;
 
 		//DLL function prototypes
-		typedef int (CALLBACK* SearchFunction) (int, int, int*, unsigned char*);
+		typedef int (CALLBACK* BulkTransferFunction) (int, unsigned char, unsigned int&, unsigned char* const);
 		typedef int (CALLBACK* ConnectFunction) (int, int, unsigned char, int*);
-		typedef int (CALLBACK* DownloadFWFunction) (int, char[]);
-		typedef int (CALLBACK* VendorRequestFunction) (int, unsigned char, unsigned short, unsigned short, unsigned char, unsigned short, unsigned char*);
 		typedef int (CALLBACK* DisconnectFunction) (unsigned int);
-
+		typedef int (CALLBACK* DownloadFWFunction) (int, char[]);		
+		typedef int (CALLBACK* GetStringDescriptorFunction) (int, int*, unsigned char*, unsigned char);
+		typedef int (CALLBACK* RetriveEndpointDetailsFunction) (int, unsigned char*, char*);
+		typedef int (CALLBACK* SearchFunction) (int, int, int*, unsigned char*);
+		typedef int (CALLBACK* VendorRequestFunction) (int, unsigned char, unsigned short, unsigned short, unsigned char, unsigned short, unsigned char*);
 
 	private:
 		//Vendor ID and Product ID for AD5370 (evaluation board)
@@ -75,12 +77,15 @@ namespace AD537x
 
 		HMODULE hinstDLL;									//HModule to load and store DLL symbols
 
-		//Instances of the typedef of the DLL function prototypes
-		SearchFunction Search_For_Boards;
+		//Instances of the typedef of the DLL function prototypes		
+		BulkTransferFunction Bulk_Transfer;
 		ConnectFunction Connect;
-		DownloadFWFunction Download_Firmware;
-		VendorRequestFunction Vendor_Request;
 		DisconnectFunction Disconnect;
+		DownloadFWFunction Download_Firmware;
+		GetStringDescriptorFunction Get_String_Descriptor;
+		RetriveEndpointDetailsFunction Retrieve_EndPoint_Details;
+		SearchFunction Search_For_Boards;
+		VendorRequestFunction Vendor_Request;
 
 		int initialize_vendor_request(int device_index);
 		int download_firmware(int device_index);

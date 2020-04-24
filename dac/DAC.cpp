@@ -13,13 +13,18 @@ namespace AD537x
 		hinstDLL = LoadLibrary(DLL_PATH);
 		if (hinstDLL == 0)
 			std::cout << "ERROR: DLL was not initialized." << std::endl;
-
-		Search_For_Boards = (SearchFunction)GetProcAddress(hinstDLL, "Search_For_Boards");
+		
+		Bulk_Transfer = (BulkTransferFunction)GetProcAddress(hinstDLL, "Bulk_Transfer");
 		Connect = (ConnectFunction)GetProcAddress(hinstDLL, "Connect");
-		Download_Firmware = (DownloadFWFunction)GetProcAddress(hinstDLL, "Download_Firmware");
-		Vendor_Request = (VendorRequestFunction)GetProcAddress(hinstDLL, "Vendor_Request");
 		Disconnect = (DisconnectFunction)GetProcAddress(hinstDLL, "Disconnect");
-		if (!Search_For_Boards || !Connect || !Vendor_Request || !Disconnect || !Download_Firmware)
+		Download_Firmware = (DownloadFWFunction)GetProcAddress(hinstDLL, "Download_Firmware");
+		Get_String_Descriptor = (GetStringDescriptorFunction)GetProcAddress(hinstDLL, "Get_String_Descriptor");
+		Retrieve_EndPoint_Details = (RetriveEndpointDetailsFunction)GetProcAddress(hinstDLL, "Retrieve_EndPoint_Details");
+		Search_For_Boards = (SearchFunction)GetProcAddress(hinstDLL, "Search_For_Boards");
+		Vendor_Request = (VendorRequestFunction)GetProcAddress(hinstDLL, "Vendor_Request");
+
+		if (!Search_For_Boards || !Connect || !Vendor_Request || !Disconnect || !Download_Firmware ||
+			!Get_String_Descriptor || !Retrieve_EndPoint_Details || Bulk_Transfer)
 		{
 			std::cout << "ERROR: One of the DLL function is empty." << std::endl;
 			FreeLibrary(hinstDLL);
