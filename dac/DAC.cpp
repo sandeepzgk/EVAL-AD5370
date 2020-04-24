@@ -55,46 +55,15 @@ namespace AD537x
 
 	int DAC::connect_board(int device_index)
 	{
-		int retVal = Connect(_VENDOR_ID, _PRODUCT_ID, devices[device_index].path[0], &devices[device_index].handle);
-		return retVal;
+		return Connect(_VENDOR_ID, _PRODUCT_ID, devices[device_index].path, &devices[device_index].handle);
 	}
 
-	std::string DAC::channel_to_hex(int channel_number)
+
+	int DAC::write_voltage(int device_index, int channel, float voltage_target)
 	{
-		std::div_t dv{};
-		dv = std::div(channel_number, 8);
-		unsigned long group_no = dv.quot + 1;
-		std::string group = std::bitset<3>(group_no).to_string();
-		std::string channel = std::bitset<3>(dv.rem).to_string();
-		std::string reg = "11"; //X Register
-		std::string word = reg + group + channel;
-		unsigned long value = std::bitset<8>(word).to_ulong();
-		std::stringstream stream;
-		stream << std::hex << value;
-		return stream.str();
-	}
-
-	std::string DAC::voltage_to_hex(float voltage_target, float v_max = 10.f, float v_min = -10.f)
-	{
-		std::stringstream stream;
-
-		float offset = (v_max - v_min) / 2.f;
-		float value = ((voltage_target + offset) / (v_max - v_min)) * 65535;
-
-		stream << std::hex << (unsigned long)(round(value));
-
-		return stream.str();
-	}
-
-	int DAC::write_voltage(int device_index, int channel, float voltage)
-	{
-		std::string index = channel_to_hex(channel);
-		std::string value = voltage_to_hex(voltage);
-
-		std::cout << "Index: " << index << std::endl;
-		std::cout << "value: " << value << std::endl;
-		std::string word = index + value;
-		return DAC::write_spi_word(device_index, word);
+		unsigned short value = round(((voltage_target + _vOffset) / _vRange) * 65535);
+		return Vendor_Request(devices[device_index].handle,
+			VR_SPI_WRITE, value, 0xC8+channel, VR_DIR_WRITE, VR_ZERO_DATA_LENGTH, &_emptyBuffer);
 	}
 
 	int DAC::pulse_ldac(int device_index)
@@ -125,9 +94,15 @@ namespace AD537x
 
 	int DAC::search_for_boards()
 	{
-		DeviceHandles device;
-		int retValue = Search_For_Boards(_VENDOR_ID, _PRODUCT_ID, &_numBoards, device.path);
-		devices.push_back(device);
+		
+		unsigned char devicePaths[MAX_BOARDS];
+		int retValue = Search_For_Boards(_VENDOR_ID, _PRODUCT_ID, &_numBoards,devicePaths);
+		for (int i = 0; i < _numBoards; i++)
+		{
+			DeviceHandles device;
+			device.path = devicePaths[i];
+			devices.push_back(device);
+		}		
 		return retValue;
 	}
 
