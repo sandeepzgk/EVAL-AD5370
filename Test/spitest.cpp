@@ -2,14 +2,16 @@
 Sandeep Zechariah George Kollannur 
 NOTE: This code is for RaspberryPi 3, tested only on RPi3, with Raspbian 10 (buster) / gcc version 8.3.0 (Raspbian 8.3.0-6+rpi1)
 RaspberryPi Performance Testing for AD5370, direct control via RPi 3 B+
-Update Frequency Achieved - 7.7 kHz, with +1, -1 volt on one channel
+Update Frequency Achieved - 7.7 kHz to 8 kHz, with +1, -1 volt on one channel
 ### Running Instruction: g++ spitest.cpp -lwiringPi -lgpiod -o spitest && ./spitest
 ### Code Based on https://github.com/sparkfun/Pi_Wedge/blob/master/software/spitest.cpp 
 ### Strace to figure out system calls
 ### g++ spitest.cpp -lwiringPi -lgpiod -o spitest && strace ./spitest 2>&1 | grep "(3," not needed
 ### during my testing file descriptor 3 was for GPIO and 4 was for SPI, it will change based on system used.
 
-**** Packages Installed (May not be a complete list****
+The speed is around 7.5 to 8 kHz, earlier tests seems to indicate it could do 16 kHz, i believe that this could be the fact that the wiringPiSPI uses a RW mode of SPI write, that means half the SPI cycles could be lost on reading. Which seems to be consistant with the 8kHz finding. Moving to a different chip will pose different concerns, but we will have to see how that works.
+
+**** Packages Installed (May not be a complete list)****
 sudo apt-get install spi-tools
 sudo apt-get install pinout
 sudo apt-get install gpio
@@ -73,7 +75,7 @@ int main()
 		buffer[0] = 203;
 		buffer[1] = 98;
 		buffer[2] = 32;
-		if(digitalRead(BUSY_pin) == HIGH) //Ensuring the system (AD5370) is not busy so that we can write to the register, not important for one channel, but might be important for multi channel
+		//if(digitalRead(BUSY_pin) == HIGH) //Ensuring the system (AD5370) is not busy so that we can write to the register, not important for one channel, but might be important for multi channel, if we remove this IF statement we get ~ 8kHz. See Prologue Note on SPEED
 			wiringPiSPIDataRW(CHANNEL, buffer, 3); //The word has to be written simultaneously, the buffer is overwritten by the read activity (RW), after the write.
 
 		//usleep(1); //Sleep to stabilize the loop, so far we have achieved 7.7 kHz, but it flickers around 7.5 to 7.8 kHz, to stabilize the loop, the usleep timer is used, may be more precision timers may be required for the future.
@@ -82,7 +84,7 @@ int main()
 		buffer[0] = 203;
 		buffer[1] = 72;
 		buffer[2] = 135;
-		if(digitalRead(BUSY_pin) == HIGH)
+		//if(digitalRead(BUSY_pin) == HIGH)
 			wiringPiSPIDataRW(CHANNEL, buffer, 3);
 		
 		//usleep(1);
