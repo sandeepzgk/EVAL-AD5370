@@ -52,7 +52,7 @@ int main()
 	// Configure the wiringPiSPI interface.
 	// CHANNEL insicates chip select,
 	// 500000 indicates bus speed.
-	fd = wiringPiSPISetupMode(CHANNEL, 500000,3);  //Returns the File Descriptor for SPI
+	fd = wiringPiSPISetupMode(CHANNEL, 500000,3);  //Returns the File Descriptor for SPI --- SPI mode 3, 2 ,1 works, SPI mode 0 DOES NOT WORK, I have not noticed any speed difference between 3 modes, need to read more about AD5370 and how this modes impact speed if it does or not.
 
 	cout << "wiringPiSPISetupMode Init result: " << fd << endl;
 
