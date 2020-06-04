@@ -90,8 +90,8 @@ int main()
 	usleep(1);
 	digitalWrite(CLR_pin, HIGH);
 	
-	//Set LDAC_pin HIGH for continious update write
-	digitalWrite(LDAC_pin, HIGH);
+	//Set LDAC_pin LOW for continious update write
+	digitalWrite(LDAC_pin, LOW);
 	cout << "Pre Loop"<< endl;
 	for(int i=0;i<100000;i++)
 	{
